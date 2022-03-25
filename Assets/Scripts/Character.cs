@@ -31,6 +31,13 @@ public abstract class Character : NetworkBehaviour
     {
         serverPosition = position;
     }
+    
+    [Command]
+    protected void CmdUpdateRotation(Vector3 rotation)
+    {
+        serverRotation = Quaternion.Euler(rotation);
+    }
+
 
     public abstract void Movement();
 
