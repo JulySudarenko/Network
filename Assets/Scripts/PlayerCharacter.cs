@@ -7,6 +7,7 @@ public class PlayerCharacter : Character
 
     [Range(0.5f, 10.0f)] [SerializeField] private float movingSpeed = 8.0f;
     [SerializeField] private float acceleration = 3.0f;
+    [SerializeField] private Vector3 startPlace = new Vector3(0, 0, 0);
     private const float gravity = -9.8f;
     private CharacterController characterController;
     private MouseLook mouseLook;
@@ -54,10 +55,13 @@ public class PlayerCharacter : Character
             mouseLook.Rotation();
 
             CmdUpdatePosition(transform.position);
+            CmdUpdateRotation(transform.eulerAngles);
         }
         else
         {
-            transform.position = Vector3.SmoothDamp(transform.position, serverPosition, ref currentVelocity, movingSpeed * Time.deltaTime);
+            transform.position = Vector3.SmoothDamp(transform.position, serverPosition, ref currentVelocity,
+                movingSpeed * Time.deltaTime);
+            transform.rotation = serverRotation;
         }
     }
 
@@ -65,6 +69,7 @@ public class PlayerCharacter : Character
     {
         Initiate();
     }
+
     private void OnGUI()
     {
         if (Camera.main == null)

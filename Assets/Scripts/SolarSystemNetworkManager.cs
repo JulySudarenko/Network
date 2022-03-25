@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class SolarSystemNetworkManager : NetworkManager
 {
+    [SerializeField] private float _min = 5.0f;
+    [SerializeField] private float _max = 11.0f;
     public class MyMessage : MessageBase
     {
         public int value;
@@ -25,25 +25,15 @@ public class SolarSystemNetworkManager : NetworkManager
             value3 = reader.ReadInt32();
         }
     }
-
-
+   
     public override void OnStartClient(NetworkClient client)
     {
-        //NetworkServer.
         NetworkClient networkClient = new NetworkClient();
         networkClient.RegisterHandler(100, (MyMessage) => { Debug.Log(MyMessage.ReadMessage<MyMessage>().value); });
         networkClient.Send(100, new MyMessage() { value = 10 });
-
-
+        
         NetworkMessageDelegate networkMessageDelegate;
         base.OnStartClient(client);
-    }
-
-
-
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
@@ -72,10 +62,11 @@ public class SolarSystemNetworkManager : NetworkManager
         else
         {
             Transform startPosition = GetStartPosition();
-            GameObject player = (!(startPosition != null)) ? Object.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity) : Object.Instantiate(playerPrefab, startPosition.position, startPosition.rotation);
+            GameObject player = (!(startPosition != null)) ? Object.Instantiate(playerPrefab, Vector3.one, Quaternion.identity) : Object.Instantiate(playerPrefab, startPosition.position , startPosition.rotation);
             var playerCharacter = player.GetComponentInChildren<PlayerCharacter>();
             playerCharacter.connection = conn;
             NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+
         }
     }
 }
